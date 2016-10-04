@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package interfaz;
+
+import clases.Helper;
+import clases.Persona;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,9 +19,12 @@ public class Agregar extends javax.swing.JDialog {
     /**
      * Creates new form Agregar
      */
+    ArrayList<Persona> personas;
+
     public Agregar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        personas = new ArrayList();
     }
 
     /**
@@ -39,7 +46,7 @@ public class Agregar extends javax.swing.JDialog {
         txtNombre = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tlbTablaPersonas = new javax.swing.JTable();
+        tblTablaPersonas = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         cmbGuardar1 = new javax.swing.JButton();
         cmbEliminar1 = new javax.swing.JButton();
@@ -71,7 +78,7 @@ public class Agregar extends javax.swing.JDialog {
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Personas"));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tlbTablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
+        tblTablaPersonas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -87,19 +94,34 @@ public class Agregar extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tlbTablaPersonas);
+        tblTablaPersonas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTablaPersonasMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblTablaPersonas);
 
-        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 510, 230));
+        jPanel3.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, 510, 290));
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 200, 530, 270));
+        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 170, 570, 370));
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Opciones"));
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         cmbGuardar1.setText("Guardar");
+        cmbGuardar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbGuardar1ActionPerformed(evt);
+            }
+        });
         jPanel4.add(cmbGuardar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(56, 16, -1, -1));
 
         cmbEliminar1.setText("Eliminar");
+        cmbEliminar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbEliminar1ActionPerformed(evt);
+            }
+        });
         jPanel4.add(cmbEliminar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(56, 50, -1, -1));
 
         cmbLimpiar1.setText("Limpiar");
@@ -107,11 +129,64 @@ public class Agregar extends javax.swing.JDialog {
 
         jPanel1.add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 30, 180, 130));
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 590, 300));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 690, 590));
 
-        setSize(new java.awt.Dimension(607, 339));
+        setSize(new java.awt.Dimension(708, 624));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cmbGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbGuardar1ActionPerformed
+        String cedula, nombre, apellido;
+        cedula = txtCedula.getText();
+        nombre = txtNombre.getText();
+        apellido = txtApellido.getText();
+
+        Persona p = new Persona(cedula, nombre, apellido);
+        personas.add(p);
+
+        Helper.llenarTabla(tblTablaPersonas, personas);
+
+        txtCedula.setText("");
+        txtNombre.setText("");
+        txtApellido.setText("");
+
+        txtCedula.requestFocusInWindow();
+
+    }//GEN-LAST:event_cmbGuardar1ActionPerformed
+
+    private void tblTablaPersonasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTablaPersonasMouseClicked
+        int i;
+        Persona p;
+
+        i = tblTablaPersonas.getSelectedRow();
+        p = personas.get(i);
+
+        txtCedula.setText(p.getCedula());
+        txtNombre.setText(p.getNombre());
+        txtApellido.setText(p.getApellido());
+    }//GEN-LAST:event_tblTablaPersonasMouseClicked
+
+    private void cmbEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbEliminar1ActionPerformed
+        int i, op;
+
+        op = JOptionPane.showConfirmDialog(this, "¿Seguro que desea eliminar a esta persona?", "Elimina", JOptionPane.YES_NO_OPTION);
+        if (op == JOptionPane.YES_OPTION) {
+
+            i = tblTablaPersonas.getSelectedRow();
+            personas.remove(i);
+            Helper.llenarTabla(tblTablaPersonas, personas);
+            
+            
+            
+            txtCedula.setText("");
+            txtNombre.setText("");
+            txtApellido.setText("");
+
+            txtCedula.requestFocusInWindow();
+        }
+
+
+    }//GEN-LAST:event_cmbEliminar1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,7 +242,7 @@ public class Agregar extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable tlbTablaPersonas;
+    private javax.swing.JTable tblTablaPersonas;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JTextField txtCedula;
     private javax.swing.JTextField txtNombre;
